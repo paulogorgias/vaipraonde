@@ -6,16 +6,16 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
   },{
     hooks:{
-      beforeSave: (user) =>{
-        const salt = bcrypt.genSaltSync();
-        user.password = bcrypt.hashSync(user.password,salt);
+      beforeSave: async (user) =>{
+         const salt = await bcrypt.genSalt(10)
+         user.password = await bcrypt.hash(user.password,salt) 
       }
     },
 
   });
 
-  User.prototype.validPassword = function(password)  {
-    return bcrypt.compareSync(password, this.password);
+  User.prototype.validPassword = async function(password)  {
+    return await bcrypt.compare(password, this.password);
   }
 
   return User;
